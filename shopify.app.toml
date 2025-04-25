@@ -1,0 +1,78 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "482a6738fd1a9fb5acd14920abf3387e"
+application_url = "https://penny-somebody-senior-cars.trycloudflare.com"
+embedded = true
+name = "Subscriptions application"
+handle = "sub-gifts-1"
+
+[webhooks]
+api_version = "unstable"
+
+  [[webhooks.subscriptions]]
+  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/customer_redact"
+  compliance_topics = [ "customers/data_request", "customers/redact" ]
+
+  [[webhooks.subscriptions]]
+  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/shop_redact"
+  compliance_topics = [ "shop/redact" ]
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/app/uninstalled"
+
+  [[webhooks.subscriptions]]
+  topics = [ "selling_plan_groups/create", "selling_plan_groups/update" ]
+  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/selling_plan_groups/create_or_update"
+
+  [[webhooks.subscriptions]]
+  topics = [ "subscription_billing_attempts/failure" ]
+  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/subscription_billing_attempts/failure"
+
+  [[webhooks.subscriptions]]
+  topics = [ "subscription_billing_attempts/success" ]
+  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/subscription_billing_attempts/success"
+
+  [[webhooks.subscriptions]]
+  topics = [ "subscription_billing_cycles/skip" ]
+  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/subscription_billing_cycles/skip"
+
+  [[webhooks.subscriptions]]
+  topics = [ "subscription_contracts/activate" ]
+  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/subscription_contracts/activate"
+
+  [[webhooks.subscriptions]]
+  topics = [ "subscription_contracts/cancel" ]
+  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/subscription_contracts/cancel"
+
+  [[webhooks.subscriptions]]
+  topics = [ "subscription_contracts/create" ]
+  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/subscription_contracts/create"
+
+  [[webhooks.subscriptions]]
+  topics = [ "subscription_contracts/pause" ]
+  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/subscription_contracts/pause"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "customer_read_orders,customer_write_customers,customer_write_own_subscription_contracts,read_all_orders,read_customer_payment_methods,read_locales,read_locations,read_themes,write_customers,write_metaobject_definitions,write_metaobjects,write_orders,write_own_subscription_contracts,write_products,write_translations"
+
+[auth]
+redirect_urls = [
+  "https://penny-somebody-senior-cars.trycloudflare.com/auth/callback",
+  "https://penny-somebody-senior-cars.trycloudflare.com/auth/shopify/callback",
+  "https://penny-somebody-senior-cars.trycloudflare.com/api/auth/callback"
+]
+
+[app_proxy]
+url = "https://penny-somebody-senior-cars.trycloudflare.com/app/proxy"
+subpath = "sub-gifts-2"
+prefix = "apps"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+include_config_on_deploy = true
+dev_store_url = "chapon-app.myshopify.com"
