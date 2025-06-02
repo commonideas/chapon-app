@@ -71,7 +71,7 @@ export default function MailGrid() {
 
       {/* Email Send Form */}
       <Form method="post">
-        <button type="submit">Send Email</button>
+        <button type="submit">Send Email!</button>
       </Form>
     </div>
   );
