@@ -88,7 +88,42 @@ export const action: ActionFunction = async ({ request }) => {
         const fullGid = item.contract.id;
         const match = fullGid.match(/\/(\d+)$/);
         const contract_id = match ? match[1] : null; 
-        // Hardcode the email transporter configuration (for testing purposes)
+
+        // Pause contract
+        const pauseMutation = `
+          mutation SubscriptionContractPause($contractId: ID!) {
+            subscriptionContractPause(subscriptionContractId: $contractId) {
+              contract {
+                id
+                status
+              }
+              userErrors {
+                field
+                message
+              }
+            }
+          }
+        `;
+
+        const pauseResponse = await fetch(`https://${shop}/admin/api/2023-10/graphql.json`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Access-Token": accessToken,
+          },
+          body: JSON.stringify({
+            query: pauseMutation,
+            variables: {
+              contractId: item.contract.id,
+            },
+          }),
+        });
+
+        const pauseResult = await pauseResponse.json();
+        const errors = pauseResult?.data?.subscriptionContractPause?.userErrors;
+
+
+                // Hardcode the email transporter configuration (for testing purposes)
             const transporter = nodemailer.createTransport({
               host: 'ssl0.ovh.net', // Example: Gmail SMTP
               port: 465, // TLS port (587)
@@ -129,40 +164,6 @@ export const action: ActionFunction = async ({ request }) => {
             } catch (error) {
               console.error('Error sending email:', error);
             }
-
-
-        // Pause contract
-        const pauseMutation = `
-          mutation SubscriptionContractPause($contractId: ID!) {
-            subscriptionContractPause(subscriptionContractId: $contractId) {
-              contract {
-                id
-                status
-              }
-              userErrors {
-                field
-                message
-              }
-            }
-          }
-        `;
-
-        const pauseResponse = await fetch(`https://${shop}/admin/api/2023-10/graphql.json`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Shopify-Access-Token": accessToken,
-          },
-          body: JSON.stringify({
-            query: pauseMutation,
-            variables: {
-              contractId: item.contract.id,
-            },
-          }),
-        });
-
-        const pauseResult = await pauseResponse.json();
-        const errors = pauseResult?.data?.subscriptionContractPause?.userErrors;
 
         if (errors?.length) {
           return json({ error: "Pause failed", userErrors: errors }, { status: 400 });
