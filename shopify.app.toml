@@ -1,7 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "482a6738fd1a9fb5acd14920abf3387e"
-application_url = "https://burn-apollo-tim-toolkit.trycloudflare.com"
+application_url = "https://proceedings-ta-packaging-entitled.trycloudflare.com"
+
 embedded = true
 name = "Subscriptions application"
 handle = "sub-gifts-1"
@@ -59,13 +60,13 @@ scopes = "customer_read_orders,customer_write_customers,customer_write_own_subsc
 
 [auth]
 redirect_urls = [
-  "https://burn-apollo-tim-toolkit.trycloudflare.com/auth/callback",
-  "https://burn-apollo-tim-toolkit.trycloudflare.com/auth/shopify/callback",
-  "https://burn-apollo-tim-toolkit.trycloudflare.com/api/auth/callback"
+  "https://proceedings-ta-packaging-entitled.trycloudflare.com/auth/callback",
+  "https://proceedings-ta-packaging-entitled.trycloudflare.com/auth/shopify/callback",
+  "https://proceedings-ta-packaging-entitled.trycloudflare.com/api/auth/callback"
 ]
 
 [app_proxy]
-url = "https://burn-apollo-tim-toolkit.trycloudflare.com/app/proxy"
+url = "https://proceedings-ta-packaging-entitled.trycloudflare.com/app/proxy"
 subpath = "sub-gifts-2"
 prefix = "apps"
 

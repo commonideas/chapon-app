@@ -19,14 +19,14 @@ export const action: ActionFunction = async () => {
           email: 'MS_vV9Jr2@test-yxj6lj9nr9q4do2r.mlsender.net',
           name: 'Test',
         },
-        to: [{ email: 'semedig615@hazhab.com' }],
+        to: [{ email: 'hivebe1966@2mik.com' }],
         subject: 'Test Email from Remix + MailerSend',
         html: '<h1>Hello from MailerSend + Remix!</h1><p>This is a test email.</p>',
         text: 'Hello from MailerSend + Remix! This is a test email.',
       },
       {
         headers: {
-          Authorization: 'Bearer mlsn.d1cedfaa0b7944139ba173f0a3f6a91d92ab5fab3251f5c1515b510d2415dc71', // ✅ Secure: use env var
+          Authorization: 'Bearer mlsn.5edcc9982dad7fdaea6535d4c2e12d626e9295ee0e8c64343db79fb813d86d60', // ✅ Secure: use env var
           'Content-Type': 'application/json',
         },
       }

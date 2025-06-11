@@ -1,6 +1,7 @@
 import { json, ActionFunction } from "@remix-run/node";
 import { PrismaClient } from "@prisma/client";
 import nodemailer from 'nodemailer';
+import axios from 'axios';
 
 const prisma = new PrismaClient();
 
@@ -11,7 +12,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     const orderId = payload?.id;
     const orderStatusUrl = payload?.order_status_url;
-
+ 
     if (!orderId || !orderStatusUrl) {
       return json({ error: "Missing order ID or status URL" }, { status: 400 });
     }
@@ -122,48 +123,52 @@ export const action: ActionFunction = async ({ request }) => {
         const pauseResult = await pauseResponse.json();
         const errors = pauseResult?.data?.subscriptionContractPause?.userErrors;
 
-
-                // Hardcode the email transporter configuration (for testing purposes)
-            const transporter = nodemailer.createTransport({
-              host: 'ssl0.ovh.net', // Example: Gmail SMTP
-              port: 465, // TLS port (587)
-              secure: true, // Set to true for SSL (465), false for TLS (587)
-              auth: {
-                user: 'test@common-ideas.com', // Your email address
-                pass: 'Puu169uKhMepZDNb',  // Your email password (or app-specific password)
-              },
-            });
+        
+           
             // Send a test email
-            try {
-              let info = await transporter.sendMail({
-                from: 'test@common-ideas.com',
-                to: orderEmail,
-                subject: 'Gift Product Activation ID',
-                text: 'This is a test email sent directly from your Shopify app using SMTP! This is Ashok ka detials ',
-                html: `<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
-                  <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
-                    <h2 style="color: #007BFF;">🎁 Activate Your Gift Subscription</h2>
-                    <p>Hello,</p>
-                    <p>Thank you for receiving a gift subscription!</p>
-                    <p>To activate your subscription, please copy the Activation ID below and enter it in the activation form provided:</p>
-                    
-                    <p style="font-size: 18px; color: #2c3e50; background-color: #f1f1f1; padding: 12px 16px; border-radius: 6px; text-align: center; font-weight: bold;">
-                      ${contract_id}
-                    </p>
+  try {
+  const response = await axios.post(
+    'https://api.mailersend.com/v1/email',
+    {
+      from: {
+        email: 'noreply@app.chapon.com',
+        name: 'Test',
+      },
+      to: [{ email: orderEmail }],
+      subject: 'Gift Product Activation ID',
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+            <h2 style="color: #007BFF;">🎁 Activate Your Gift Subscription</h2>
+            <p>Hello,</p>
+            <p>Thank you for receiving a gift subscription!</p>
+            <p>To activate your subscription, please copy the Activation ID below and enter it in the activation form provided:</p>
+            
+            <p style="font-size: 18px; color: #2c3e50; background-color: #f1f1f1; padding: 12px 16px; border-radius: 6px; text-align: center; font-weight: bold;">
+              ${contract_id}
+            </p>
 
-                    <p>If you need assistance, feel free to contact us at <a href="mailto:support@common-ideas.com">support@common-ideas.com</a>.</p>
+            <p>If you need assistance, feel free to contact us at <a href="mailto:support@common-ideas.com">support@common-ideas.com</a>.</p>
 
-                    <hr style="margin-top: 30px; border: none; border-top: 1px solid #e0e0e0;">
-                    <p style="font-size: 12px; color: #888;">This email was sent from the Common Ideas Shopify App.</p>
-                  </div>
-                </div>`,
-              });
+            <hr style="margin-top: 30px; border: none; border-top: 1px solid #e0e0e0;">
+            <p style="font-size: 12px; color: #888;">This email was sent from the Common Ideas Shopify App.</p>
+          </div>
+        </div>
+      `,
+      text: `Activate your gift subscription with ID: ${contract_id}`,
+    },
+    {
+      headers: {
+        Authorization: 'Bearer mlsn.5edcc9982dad7fdaea6535d4c2e12d626e9295ee0e8c64343db79fb813d86d60', // 🔐 Move to env
+        'Content-Type': 'application/json',
+      },
+    }
+  );
 
-              console.log('Email sent successfully!');
-              console.log('Message ID:', info.messageId);
-            } catch (error) {
-              console.error('Error sending email:', error);
-            }
+  console.log('MailerSend: Email sent!', response.data);
+} catch (error: any) {
+  console.error('MailerSend Email Error:', error.response?.data || error.message);
+}
 
         if (errors?.length) {
           return json({ error: "Pause failed", userErrors: errors }, { status: 400 });
