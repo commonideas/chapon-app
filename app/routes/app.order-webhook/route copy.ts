@@ -85,6 +85,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     const lineItems = result?.data?.order?.lineItems?.nodes || [];
     const orderEmail = result?.data?.order?.email || result?.data?.order?.customer?.email;
+    console.log("Order mail",lineItems)
     
     for (const item of lineItems) {
       const isGift = item.customAttributes?.some(
@@ -130,35 +131,6 @@ export const action: ActionFunction = async ({ request }) => {
         const pauseResult = await pauseResponse.json();
         const errors = pauseResult?.data?.subscriptionContractPause?.userErrors;
 
-
-
-        const draftMutation = `
-                mutation subscriptionContractUpdate($contractId: ID!) { subscriptionContractUpdate(contractId: $contractId) { draft { id } userErrors { field message } } }
-              `;
-
-              const draftResponse = await fetch(`https://${shop}/admin/api/2023-10/graphql.json`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  "X-Shopify-Access-Token": accessToken,
-                },
-                body: JSON.stringify({
-                  query: draftMutation,
-                  variables: {
-                    contractId: item.contract.id,  // or use contract_id if you extracted it
-                  },
-                }),
-              });
-
-              const draftData = await draftResponse.json();
-              // Safely extract the draft ID
-              const draftId = draftData?.data?.subscriptionContractUpdate?.draft?.id || null;
-
-            const fullGid1 = draftId;
-            const match1 = fullGid1.match(/\/(\d+)$/);
-            const contract_id1 = match1 ? match1[1] : null; 
-  
-
               // 📨 Generate PDF dynamically
           const pdfDoc = await PDFDocument.create();
           const page = pdfDoc.addPage([600, 400]);
@@ -173,7 +145,7 @@ export const action: ActionFunction = async ({ request }) => {
             color: rgb(0.1, 0.2, 0.6),
           });
 
-          page.drawText(`Activation ID: ${contract_id1}`, {
+          page.drawText(`Activation ID: ${contract_id}`, {
             x: 50,
             y: height - 130,
             size: 16,
@@ -212,7 +184,7 @@ export const action: ActionFunction = async ({ request }) => {
                       <p>To activate your subscription, please copy the Activation ID below and enter it in the activation form provided:</p>
                       
                       <p style="font-size: 18px; color: #2c3e50; background-color: #f1f1f1; padding: 12px 16px; border-radius: 6px; text-align: center; font-weight: bold;">
-                        ${contract_id1}
+                        ${contract_id}
                       </p>
 
                       <p>If you need assistance, feel free to contact us at <a href="mailto:support@common-ideas.com">support@common-ideas.com</a>.</p>
@@ -222,7 +194,7 @@ export const action: ActionFunction = async ({ request }) => {
                     </div>
                   </div>
                 `,
-                text: `Activate your gift subscription with ID: ${contract_id1}`,
+                text: `Activate your gift subscription with ID: ${contract_id}`,
                 attachments: [
                   {
                     content: pdfBase64,
@@ -250,8 +222,6 @@ export const action: ActionFunction = async ({ request }) => {
         if (errors?.length) {
           return json({ error: "Pause failed", userErrors: errors }, { status: 400 });
         }
-
-        break;
       }
     }
 
