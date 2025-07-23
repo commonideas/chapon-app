@@ -35,7 +35,7 @@
     "@remix-run/testing": "^2.16.6",
     "@rollup/plugin-graphql": "2.0.5",
     "@rvf/remix": "6.2.0",
-    "@rvf/zod": "6.0.3",
+    "@rvf/zod": "^7.0.3",
     "@shopify/address": "4.3.0",
     "@shopify/address-mocks": "^1.2.27",
     "@shopify/admin-api-client": "1.0.4",
