@@ -1,5 +1,7 @@
 import { json, LoaderFunction } from "@remix-run/node";
 import { PrismaClient } from "@prisma/client";
+import { updateCustomerMetafieldWithContract } from '~/utils/updateCustomerMetafieldWithContract';
+
 
 const prisma = new PrismaClient();
 
@@ -7,7 +9,7 @@ export const action: LoaderFunction = async ({ request }) => {
   try {
     const formData = await request.formData();
     const shop = formData.get('shop')?.toString();
-    //const email = formData.get('email')?.toString();
+    const email = formData.get('activation_email')?.toString();
     const draftsubscriptionContractId = formData.get('subscriptionContractId')?.toString();
       const firstName = formData.get('firstName')?.toString();
       const lastName = formData.get('lastName')?.toString();
@@ -16,11 +18,15 @@ export const action: LoaderFunction = async ({ request }) => {
       const zip = formData.get('zip')?.toString();
       const country = formData.get('country')?.toString();
       const phone = formData.get('phone')?.toString();
-      const startDate = formData.get('next-billing-date')?.toString();
+      // const startDate:any = formData.get('next-billing-date')?.toString();
+      const startDate = new Date();
           /// Parse and validate start date
         const parsedStartDate = new Date(startDate);
         if (isNaN(parsedStartDate.getTime())) {
           return json({ error: "Invalid start date format" }, { status: 400 });
+        }
+        if (!email) {
+          return json({error: 'Missing customer email'}, {status: 400});
         }
 
         // Compare dates without time component
@@ -29,9 +35,9 @@ export const action: LoaderFunction = async ({ request }) => {
         const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
         // Allow current date or future dates
-        if (startDateOnly < todayOnly) {
-          return json({ error: "Start date must be today or in the future" }, { status: 400 });
-        }
+        // if (startDateOnly < todayOnly) {
+        //   return json({ error: "Start date must be today or in the future" }, { status: 400 });
+        // }
 
         // Format startDate for Shopify (midnight UTC on the chosen date)
         const formattedStartDate = new Date(parsedStartDate.getFullYear(), parsedStartDate.getMonth(), parsedStartDate.getDate()).toISOString();
@@ -55,6 +61,10 @@ export const action: LoaderFunction = async ({ request }) => {
     const accessToken = session.accessToken;
 
     const fullContractId = `gid://shopify/SubscriptionDraft/${draftsubscriptionContractId}`;
+    console.log("draftsubscriptionContractId____",draftsubscriptionContractId);
+    // console.log("tokennnn--- " , session);
+    
+    // return draftsubscriptionContractId;
 
         const updateMutation = `
         mutation subscriptionDraftUpdate($draftId: ID!, $input: SubscriptionDraftInput!) {
@@ -170,6 +180,24 @@ export const action: LoaderFunction = async ({ request }) => {
                         id
                         status
                         nextBillingDate
+                        lines(first: 50) {
+                          edges {
+                            node {
+                              id
+                              title
+                              variantTitle
+                              variantId
+                               variantImage {
+                                  altText
+                                  url
+                                }
+                              }
+                            }
+                          }
+                          billingPolicy {
+                          interval
+                          intervalCount
+                        }
                       }
                       userErrors {
                         field
@@ -200,6 +228,28 @@ export const action: LoaderFunction = async ({ request }) => {
                 return json({ error: updateData?.[0]?.message }, { status: 400 });
               }
               else{
+                let customer_address = {
+                  address1: address1,
+                  city: province,
+                  province: province,
+                  phone: phone,
+                  zip: zip,
+                  lastName: lastName,
+                  firstName: firstName,
+                  countryCode: country,
+                };
+                  await updateCustomerMetafieldWithContract({
+                    shop,
+                    accessToken,
+                    email: email,
+                    firstName,
+                    lastName,
+                    phone,
+                    customer_address,
+                    contract: updateData?.data?.subscriptionContractActivate?.contract,
+                    startDate: parsedStartDate.toISOString().split("T")[0],
+                  });
+                console.log(updateData);
                return json({ message: "Contract Succesfully actived." });
            }
            
@@ -211,3 +261,5 @@ export const action: LoaderFunction = async ({ request }) => {
     return json({ error: "Internal server error", details: err.message }, { status: 500 });
   }
 };
+
+

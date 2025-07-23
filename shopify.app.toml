@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "482a6738fd1a9fb5acd14920abf3387e"
-application_url = "https://solomon-saver-acting-determination.trycloudflare.com"
+application_url = "https://trace-nov-omaha-lender.trycloudflare.com"
 embedded = true
 name = "Subscriptions application"
 handle = "sub-gifts-1"
@@ -53,19 +53,23 @@ api_version = "unstable"
   topics = [ "subscription_contracts/pause" ]
   uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/subscription_contracts/pause"
 
+  [[webhooks.subscriptions]]
+  topics = [ "orders/create" ]
+  uri = "/app/order-webhook"
+
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
 scopes = "customer_read_orders,customer_write_customers,customer_write_own_subscription_contracts,read_all_orders,read_customer_payment_methods,read_locales,read_locations,read_themes,write_customers,write_metaobject_definitions,write_metaobjects,write_orders,write_own_subscription_contracts,write_products,write_translations"
 
 [auth]
 redirect_urls = [
-  "https://solomon-saver-acting-determination.trycloudflare.com/auth/callback",
-  "https://solomon-saver-acting-determination.trycloudflare.com/auth/shopify/callback",
-  "https://solomon-saver-acting-determination.trycloudflare.com/api/auth/callback"
+  "https://trace-nov-omaha-lender.trycloudflare.com/auth/callback",
+  "https://trace-nov-omaha-lender.trycloudflare.com/auth/shopify/callback",
+  "https://trace-nov-omaha-lender.trycloudflare.com/api/auth/callback"
 ]
 
 [app_proxy]
-url = "https://solomon-saver-acting-determination.trycloudflare.com/app/proxy"
+url = "https://trace-nov-omaha-lender.trycloudflare.com/app/proxy"
 subpath = "sub-gifts-2"
 prefix = "apps"
 
