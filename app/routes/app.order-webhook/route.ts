@@ -207,8 +207,13 @@ export const action: ActionFunction = async ({request}) => {
                 key
                 value
               }
+              variantTitle
               contract {
                 id
+                billingPolicy {
+                  interval
+                  intervalCount
+                }
               }
             }
           }
@@ -263,6 +268,9 @@ export const action: ActionFunction = async ({request}) => {
           (attr: any) => attr.key === 'Email',
         )?.value;
         console.log(recipientEmail, "recipientEmail");
+          const gift_message = item.customAttributes?.find(
+          (attr: any) => attr.key === 'Message',
+        )?.value;
         // Pause contract
         const pauseMutation = `
           mutation SubscriptionContractPause($contractId: ID!) {
@@ -333,9 +341,9 @@ export const action: ActionFunction = async ({request}) => {
         const pdfBase64 = await createGiftSubscriptionPDF({
          sender:senderEmail,
           activationCode: contract_id1,
-          message: 'Bonne dégustation !',
-          chocolateType: item.variant_title,
-          duration: quantity,
+          message: gift_message||"",
+          chocolateType: item.variantTitle,
+          duration: item.contract.billingPolicy.intervalCount,
           recipient: recipientEmail,
         });
 
@@ -373,7 +381,7 @@ export const action: ActionFunction = async ({request}) => {
               attachments: [
                 {
                   content: pdfBase64,
-                  filename: 'activation-id.pdf',
+                  filename: "Carte cadeau chapon.pdf",
                   disposition: 'attachment',
                   type: 'application/pdf',
                 },
@@ -417,6 +425,9 @@ export const action: ActionFunction = async ({request}) => {
   }
 };
 
+
+
+
 async function createGiftSubscriptionPDF({
   sender = 'DE LA PART DE :',
   activationCode = 'XXXX-XXXX',
@@ -425,228 +436,211 @@ async function createGiftSubscriptionPDF({
   duration = 3,
   recipient = 'POUR :',
 }) {
-  const pdfDoc = await PDFDocument.create();
-    const page1 = pdfDoc.addPage([600, 400]);
-    const {width, height} = page1.getSize();
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    
-    const fontSize = 12;
-    const titleFontSize = 24;
-    const chocolateTypeCondition = chocolateType.includes("Noir")  ? "(   ) Mixte    ( * ) Noir" : "( * ) Mixte    (   ) Noir" ;
-    const durationCondition = duration == 3 ? "( * ) 3 mois    (   ) 6 mois    (   ) 9 mois" : duration == 6 ? "(   ) 3 mois    ( * ) 6 mois    (   ) 9 mois" : "(   ) 3 mois    (   ) 6 mois    ( * ) 9 mois";
-    // Title
-    page1.drawText('Bon cadeau', {
-      x: 30,
-      y: height - 50,
-      size: titleFontSize,
-      font: font,
-      color: rgb(0, 0, 0),
-    });
-    page1.drawText('Abonnement tablettes', {
-      x: 30,
-      y: height - 80,
-      size: fontSize + 4,
-      font: font,
-      color: rgb(0, 0, 0),
-    });
+ 
+const pdfDoc = await PDFDocument.create();
+const page1 = pdfDoc.addPage([600, 400]);
+const { width, height } = page1.getSize();
+const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-    // Fields
-    let yPosition = height - 120;
+function wrapText(text: string, maxCharsPerLine: number): string[] {
+  const words = text.split(' ');
+  const lines: string[] = [];
+  let line = '';
+  for (const word of words) {
+    if ((line + word).length > maxCharsPerLine) {
+      lines.push(line.trim());
+      line = '';
+    }
+    line += word + ' ';
+  }
+  if (line) lines.push(line.trim());
+  return lines;
+}
 
-    // CODE ACTIVATION
-    page1.drawText('CODE ACTIVATION :', {
-      x: 30,
-      y: yPosition,
-      size: fontSize,
-      font: font,
-      color: rgb(0, 0, 0),
-    });
-    page1.drawText(
-      activationCode,
-      {
-        x: 32,
-        y: yPosition - 25,
-        size: fontSize,
-        font: font,
-        color: rgb(0, 0, 0),
-      },
-    );
-    
-    page1.drawText(
-      '......................................................................',
-      {
-        x: 30,
-        y: yPosition - 30,
-        size: fontSize,
-        font: font,
-        color: rgb(0, 0, 0),
-      },
-    );
+const fontSize = 12;
+const smallfontSize = 8;
+const titleFontSize = 24;
+const chocolateTypeCondition = chocolateType.includes("Noir")
+  ? "(   ) Mixte    ( * ) Noir"
+  : "( * ) Mixte    (   ) Noir";
+const durationCondition =
+  duration == 3
+    ? "( * ) 3 mois    (   ) 6 mois    (   ) 9 mois"
+    : duration == 6
+    ? "(   ) 3 mois    ( * ) 6 mois    (   ) 9 mois"
+    : "(   ) 3 mois    (   ) 6 mois    ( * ) 9 mois";
 
-    // MESSAGE
-    page1.drawText('MESSAGE :', {
-      x: width / 2 + 20,
-      y: yPosition,
-      size: fontSize,
-      font: font,
-      
-      color: rgb(0, 0, 0),
-    });
-    page1.drawText(
-      '......................................................................',
-      {
-        x: width / 2 + 20,
-        y: yPosition - 30,
-        size: fontSize,
-        font: font,
-        color: rgb(0, 0, 0),
-      },
-    );
-    page1.drawText(
-      '......................................................................',
-      {
-        x: width / 2 + 20,
-        y: yPosition - 60,
-        size: fontSize,
-        font: font,
-        color: rgb(0, 0, 0),
-      },
-    );
-    page1.drawText(
-      '......................................................................',
-      {
-        x: width / 2 + 20,
-        y: yPosition - 90,
-        size: fontSize,
-        font: font,
-        color: rgb(0, 0, 0),
-      },
-    );
-    page1.drawText(
-      '......................................................................',
-      {
-        x: width / 2 + 20,
-        y: yPosition - 120,
-        size: fontSize,
-        font: font,
-        color: rgb(0, 0, 0),
-      },
-    );
-    page1.drawText(
-      '......................................................................',
-      {
-        x: width / 2 + 20,
-        y: yPosition - 150,
-        size: fontSize,
-        font: font,
-        color: rgb(0, 0, 0),
-      },
-    );
+page1.drawRectangle({
+  x: 0,
+  y: 0,
+  width: width,
+  height: height,
+  color: rgb(1.0, 0.9725, 0.9804),
+});
+// === Title ===
+page1.drawText('Bon cadeau', {
+  x: 30,
+  y: height - 50,
+  size: titleFontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
+page1.drawText('Abonnement tablettes', {
+  x: 30,
+  y: height - 80,
+  size: fontSize + 4,
+  font,
+  color: rgb(0, 0, 0),
+});
 
-    yPosition -= 70;
+let yPosition = height - 120;
 
-    // DE LA PART DE
-    page1.drawText('DE LA PART DE :', {
-      x: 30,
-      y: yPosition,
-      size: fontSize,
-      font: font,
-      color: rgb(0, 0, 0),
-    });
-    page1.drawText(
-      sender,
-      {
-        x: 32,
-        y: yPosition - 25,
-        size: fontSize,
-        font: font,
-        color: rgb(0, 0, 0),
-      },
-    );
-    page1.drawText(
-      '......................................................................',
-      {
-        x: 30,
-        y: yPosition - 30,
-        size: fontSize,
-        font: font,
-        color: rgb(0, 0, 0),
-      },
-    );
+// === CODE ACTIVATION ===
+page1.drawText('CODE ACTIVATION :', {
+  x: 30,
+  y: yPosition,
+  size: fontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
+page1.drawText(activationCode, {
+  x: 32,
+  y: yPosition - 25,
+  size: fontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
+page1.drawText('......................................................................', {
+  x: 30,
+  y: yPosition - 30,
+  size: fontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
 
-    yPosition -= 70;
+yPosition -= 70;
 
-    // POUR
-    page1.drawText('POUR :', {
-      x: 30,
-      y: yPosition,
-      size: fontSize,
-      font: font,
-      color: rgb(0, 0, 0),
-    });
-    page1.drawText(
-      recipient,
-      {
-        x: 32,
-        y: yPosition - 25,
-        size: fontSize,
-        font: font,
-        color: rgb(0, 0, 0),
-      },
-    );
-    page1.drawText(
-      '......................................................................',
-      {
-        x: 30,
-        y: yPosition - 30,
-        size: fontSize,
-        font: font,
-        color: rgb(0, 0, 0),
-      },
-    );
+// === DE LA PART DE ===
+page1.drawText('DE LA PART DE :', {
+  x: 30,
+  y: yPosition,
+  size: fontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
+page1.drawText(sender, {
+  x: 32,
+  y: yPosition - 25,
+  size: fontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
+page1.drawText('......................................................................', {
+  x: 30,
+  y: yPosition - 30,
+  size: fontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
 
-    yPosition -= 70;
+yPosition -= 70;
 
-    // DURÉE
-    page1.drawText('DURÉE :', {
-      x: 30,
-      y: yPosition,
-      size: fontSize,
-      font: font,
-      color: rgb(0, 0, 0),
-    });
-    page1.drawText(durationCondition, {
-      x: 30,
-      y: yPosition - 20,
-      size: fontSize,
-      font: font,
-      color: rgb(0, 0, 0),
-    });
+// === POUR ===
+page1.drawText('POUR :', {
+  x: 30,
+  y: yPosition,
+  size: fontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
+page1.drawText(recipient, {
+  x: 32,
+  y: yPosition - 25,
+  size: fontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
+page1.drawText('......................................................................', {
+  x: 30,
+  y: yPosition - 30,
+  size: fontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
 
-    // CHOCOLAT
-    page1.drawText('CHOCOLAT :', {
-      x: width / 2 + 20,
-      y: yPosition,
-      size: fontSize,
-      font: font,
-      color: rgb(0, 0, 0),
-    });
-    page1.drawText(chocolateTypeCondition, {
-      x: width / 2 + 20,
-      y: yPosition - 20,
-      size: fontSize,
-      font: font,
-      color: rgb(0, 0, 0),
-    });
-    yPosition -= 55;
-    // Activation URL
-    page1.drawText('Activez votre abonnement sur chapon/abonnement.com' , {
-      x: width / 2 - 155,
-      y: yPosition,
-      size: fontSize,
-      font: font,
-      color: rgb(0, 0, 0),
-    });
+yPosition -= 70;
+
+// === MESSAGE ===
+page1.drawText('MESSAGE :', {
+  x: width / 2 + 20,
+  y: height - 120,
+  size: fontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
+const messageLines = wrapText(message, 50);
+let messageY = height - 150;
+for (let i = 0; i < 5; i++) {
+  const line = messageLines[i] || '';
+  page1.drawText(line, {
+    x: width / 2 + 20,
+    y: messageY,
+    size: fontSize,
+    font,
+    color: rgb(0, 0, 0),
+  });
+  page1.drawText('......................................................................', {
+    x: width / 2 + 20,
+    y: messageY - 5,
+    size: fontSize,
+    font,
+    color: rgb(0, 0, 0),
+  });
+  messageY -= 25;
+}
+
+// === DURÉE ===
+page1.drawText('DURÉE :', {
+  x: 30,
+  y: yPosition,
+  size: fontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
+page1.drawText(durationCondition, {
+  x: 30,
+  y: yPosition - 20,
+  size: fontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
+
+// === CHOCOLAT ===
+page1.drawText('CHOCOLAT :', {
+  x: width / 2 + 20,
+  y: yPosition,
+  size: fontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
+page1.drawText(chocolateTypeCondition, {
+  x: width / 2 + 20,
+  y: yPosition - 20,
+  size: fontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
+
+yPosition -= 55;
+
+// === URL ===
+page1.drawText('Activez votre abonnement sur https://chapon-app.myshopify.com/pages/activate-subscription', {
+  x: width / 2 - 155,
+  y: yPosition,
+  size: smallfontSize,
+  font,
+  color: rgb(0, 0, 0),
+});
 
     // Add second page (blank)
     const imageUrl =
@@ -665,7 +659,6 @@ async function createGiftSubscriptionPDF({
       width: 600,
       height: 400,
     });
-
 
   const pdfBytes = await pdfDoc.save();
   const pdfBase64 = Buffer.from(pdfBytes).toString('base64').replace(/\n/g, '');
