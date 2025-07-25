@@ -48,6 +48,7 @@ query SubscriptionContractDetails($id: ID!) {
     billingPolicy {
       interval
       intervalCount
+      maxCycles
     }
     nextBillingDate
     deliveryPolicy {

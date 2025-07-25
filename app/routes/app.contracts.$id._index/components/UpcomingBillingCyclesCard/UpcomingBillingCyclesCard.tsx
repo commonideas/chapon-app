@@ -40,6 +40,9 @@ export function UpcomingBillingCyclesCard({
   const billingCyclesCount = upcomingBillingCycles.length;
   const formatDate = useFormatDate();
 
+  console.log("jguygghhfjhy" , upcomingBillingCycles);
+  
+
   return (
     <Card>
       <BlockStack gap="200">

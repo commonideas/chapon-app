@@ -197,6 +197,7 @@ export async function getNextBillingCycleDates(
   billingCyclesCount: number,
   interval: SellingPlanInterval,
   intervalCount: number,
+  maxCycles:number,
 ): Promise<{
   upcomingBillingCycles: UpcomingBillingCycle[];
   hasMoreBillingCycles: boolean;
@@ -234,16 +235,79 @@ export async function getNextBillingCycleDates(
     );
   }
 
-  // if any billing cycle results in an order created, count it as past and not upcoming
-  const upcomingBillingCycles = nodesFromEdges(
-    data.subscriptionBillingCycles.edges,
-  ).filter(({billingAttempts}) => {
-    const attempts = nodesFromEdges(billingAttempts.edges || []);
-    return !attempts.some((attempt) => Boolean(attempt.order));
-  });
+
+ 
+  // Filter out cycles where there is already an order
+  let filteredBillingCycles = nodesFromEdges(data.subscriptionBillingCycles.edges).filter(
+    ({ billingAttempts }) => {
+      const attempts = nodesFromEdges(billingAttempts.edges || []);
+      return !attempts.some((attempt) => Boolean(attempt.order));
+    }
+  );
+
+  // Logic for maxCycles
+  if (maxCycles === null || maxCycles !== 1) {
+    // If maxCycles is null or maxCycles is not 1, return the original filtered billing cycles
+    return {
+      upcomingBillingCycles: filteredBillingCycles,
+      hasMoreBillingCycles: data.subscriptionBillingCycles.pageInfo.hasNextPage,
+    };
+  }
+
+
+  
+  if (maxCycles === 1) {
+     const lastCycle = filteredBillingCycles[0];
+
+    if (!lastCycle) {
+      return {
+        upcomingBillingCycles: [],
+        hasMoreBillingCycles: data.subscriptionBillingCycles.pageInfo.hasNextPage,
+      };
+    }
+
+    // Start from the last cycle's billing date (before billingAttemptExpectedDate)
+    let currentBillingDate = DateTime.fromISO(lastCycle.billingAttemptExpectedDate).minus({ months: intervalCount });
+    console.log("currentBillingDate____", currentBillingDate.toISO());
+
+    const customCycles = [];
+
+    // Include the first cycle as the current cycle (it should be included, even if in the past)
+    customCycles.push({
+      ...lastCycle,
+      billingAttemptExpectedDate: currentBillingDate.toISO(),
+      cycleIndex: 1, // Custom cycle index (1)
+    });
+
+    // Generate cycles for intervalCount months (e.g., 3 months if intervalCount is 3)
+    for (let i = 1; i < intervalCount; i++) {
+      // Move to the next cycle by adding 1 month
+      currentBillingDate = currentBillingDate.plus({ months: 1 });
+
+      // If the generated cycle is in the past, skip it
+      if (currentBillingDate < DateTime.now()) {
+        console.log(`Skipping past date: ${currentBillingDate.toISO()}`);
+        continue;
+      }
+
+      customCycles.push({
+        ...lastCycle,
+        billingAttemptExpectedDate: currentBillingDate.toISO(),
+        cycleIndex: i + 1, // Custom cycle index (2, 3, ...)
+      });
+    }
+
+    // Now ensure we only return cycles that are **not** in the past
+    const validUpcomingCycles = customCycles.filter((cycle) => DateTime.fromISO(cycle.billingAttemptExpectedDate) >= DateTime.now());
+
+    return {
+      upcomingBillingCycles: validUpcomingCycles,
+      hasMoreBillingCycles: data.subscriptionBillingCycles.pageInfo.hasNextPage,
+    };
+  }
 
   return {
-    upcomingBillingCycles,
+    upcomingBillingCycles: [],
     hasMoreBillingCycles: data.subscriptionBillingCycles.pageInfo.hasNextPage,
   };
 }

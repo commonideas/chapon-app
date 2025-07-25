@@ -103,6 +103,7 @@ export interface SellingPlanDetails {
 export interface RecurringPolicy {
   interval: SellingPlanInterval;
   intervalCount: number;
+  maxCycles:number;
 }
 
 export interface DeliveryMethod {

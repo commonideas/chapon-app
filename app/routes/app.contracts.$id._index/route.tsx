@@ -66,7 +66,7 @@ export async function loader({params, request}) {
   const subscriptionContract = await getContractDetails(admin.graphql, gid);
 
   const {
-    billingPolicy: {interval, intervalCount},
+    billingPolicy: {interval, intervalCount,maxCycles},
   } = subscriptionContract;
 
   const upcomingBillingCyclesPromise =
@@ -77,6 +77,7 @@ export async function loader({params, request}) {
           billingCyclesCount,
           interval,
           intervalCount,
+          maxCycles
         )
       : {
           upcomingBillingCycles: [],

@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "482a6738fd1a9fb5acd14920abf3387e"
-application_url = "https://supporting-pos-universal-cartridges.trycloudflare.com"
+application_url = "https://buck-significantly-dv-hans.trycloudflare.com"
 embedded = true
 name = "Subscriptions application"
 handle = "sub-gifts-1"
@@ -63,13 +63,13 @@ scopes = "customer_read_orders,customer_write_customers,customer_write_own_subsc
 
 [auth]
 redirect_urls = [
-  "https://supporting-pos-universal-cartridges.trycloudflare.com/auth/callback",
-  "https://supporting-pos-universal-cartridges.trycloudflare.com/auth/shopify/callback",
-  "https://supporting-pos-universal-cartridges.trycloudflare.com/api/auth/callback"
+  "https://buck-significantly-dv-hans.trycloudflare.com/auth/callback",
+  "https://buck-significantly-dv-hans.trycloudflare.com/auth/shopify/callback",
+  "https://buck-significantly-dv-hans.trycloudflare.com/api/auth/callback"
 ]
 
 [app_proxy]
-url = "https://supporting-pos-universal-cartridges.trycloudflare.com/app/proxy"
+url = "https://buck-significantly-dv-hans.trycloudflare.com/app/proxy"
 subpath = "sub-gifts-2"
 prefix = "apps"
 
