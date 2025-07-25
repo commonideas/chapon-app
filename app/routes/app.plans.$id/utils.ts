@@ -162,7 +162,18 @@ export function getSellingPlansFromDiscountDeliveryOptions(
         interval: deliveryInterval as SellingPlanInterval,
         intervalCount: deliveryFrequency,
       };
+      const recurringBillingPolicy = {
+        interval: deliveryInterval as SellingPlanInterval,
+        intervalCount: deliveryFrequency,
+        maxCycles:1
+      };
+      const recurringDelivery = {
+        interval: deliveryInterval as SellingPlanInterval,
+        intervalCount: 1,
+      };
 
+      console.log("changeeeeee_plan____", recurringBillingPolicy,recurringDelivery);
+      
       const adjustmentValue =
         discountType === DiscountType.PERCENTAGE
           ? {percentage: discountValue}
@@ -183,10 +194,10 @@ export function getSellingPlansFromDiscountDeliveryOptions(
         options: [information.option],
         category: 'SUBSCRIPTION' as SellingPlanCategory,
         billingPolicy: {
-          recurring: recurringDeliveryAndBillingPolicy,
+          recurring: recurringBillingPolicy,
         },
         deliveryPolicy: {
-          recurring: recurringDeliveryAndBillingPolicy,
+          recurring: recurringDelivery,
         },
         pricingPolicies:
           discountValue && offerDiscount ? [pricingPolicies] : [],
