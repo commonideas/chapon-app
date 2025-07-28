@@ -260,14 +260,12 @@ export const action: ActionFunction = async ({request}) => {
         const fullGid = item.contract.id;
         const match = fullGid.match(/\/(\d+)$/);
         const contract_id = match ? match[1] : null;
-        const senderEmail = item.customAttributes?.find(
+        const recipientEmail = item.customAttributes?.find(
           (attr: any) => attr.key === 'Nom',
         )?.value;
-        console.log(senderEmail, "senderEmail");
-        const recipientEmail = item.customAttributes?.find(
+        const senderEmail = item.customAttributes?.find(
           (attr: any) => attr.key === 'Email',
         )?.value;
-        console.log(recipientEmail, "recipientEmail");
           const gift_message = item.customAttributes?.find(
           (attr: any) => attr.key === 'Message',
         )?.value;
@@ -354,28 +352,38 @@ export const action: ActionFunction = async ({request}) => {
             {
               from: {
                 email: 'noreply@app.chapon.com',
-                name: 'Test',
+                name: 'Chapon',
               },
               to: [{email: customerEmail.toString()}],
-              subject: 'Gift Product Activation ID',
+              subject: 'Carte Cadeau abonnement ! 🎁 ',
               html: `
-                  <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
-                    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
-                      <h2 style="color: #007BFF;">🎁 Activate Your Gift Subscription</h2>
-                      <p>Hello,</p>
-                      <p>Thank you for receiving a gift subscription!</p>
-                      <p>To activate your subscription, please copy the Activation ID below and enter it in the activation form provided:</p>
-                      
-                      <p style="font-size: 18px; color: #2c3e50; background-color: #f1f1f1; padding: 12px 16px; border-radius: 6px; text-align: center; font-weight: bold;">
-                        ${contract_id1}
-                      </p>
+                <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
+                  <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+                    <h2 style="color: #d2691e;">🎁 Activez votre abonnement cadeau Chapon</h2>
+                    <p>Bonjour,</p>
+                    <p>Vous trouverez en pièce jointe votre carte cadeau.<br>
+                    Elle contient un <strong>code à usage unique</strong> que votre destinataire devra renseigner pour activer son abonnement.</p>
 
-                      <p>If you need assistance, feel free to contact us at <a href="mailto:support@common-ideas.com">support@common-ideas.com</a>.</p>
+                    <p><strong>Pour activer un abonnement :</strong></p>
+                    <ol>
+                      <li>Rendez-vous sur : <a href="https://chapon.com/pages/activation-abonnement">https://chapon.com/pages/activation-abonnement</a></li>
+                      <li>Renseignez votre code dans l’espace dédié</li>
+                      <li>
+                        <p style="font-size: 18px; color: #2c3e50; background-color: #f1f1f1; padding: 12px 16px; border-radius: 6px; text-align: center; font-weight: bold;">
+                          ${contract_id1}
+                        </p>
+                      </li>
+                      <li>📦 Une fois activé, l’abonnement démarre : le premier envoi sera préparé avec soin et expédié dans les jours suivants.</li>
+                    </ol>
 
-                      <hr style="margin-top: 30px; border: none; border-top: 1px solid #e0e0e0;">
-                      <p style="font-size: 12px; color: #888;">This email was sent from the Common Ideas Shopify App.</p>
-                    </div>
+                    <p>Nous vous remercions de nouveau d’avoir souscrit à cet abonnement.</p>
+                    <p>Nous vous souhaitons une très belle journée et à bientôt chez Chapon.</p>
+                    <p>L’équipe Chapon Chocolatier</p>
+
+                    <hr style="margin-top: 30px; border: none; border-top: 1px solid #e0e0e0;">
+                    <p style="font-size: 12px; color: #888;">Cet email a été envoyé par l'application Chapon sur Shopify.</p>
                   </div>
+                </div>
                 `,
               text: `Activate your gift subscription with ID: ${contract_id1}`,
               attachments: [
