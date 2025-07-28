@@ -277,16 +277,16 @@ const getButtonKind= (label) => {
   <BlockStack spacing="base">
   {loading ? (
     <BlockStack inlineAlignment="center">
-      <Text size="medium">Loading subscriptions...</Text>
+      <Text size="medium">Loading Abonnement...</Text>
       <Spinner />
     </BlockStack>
   ) : (
     <BlockStack spacing="base">
-      <Heading>Subscription</Heading>
+      <Heading>Abonnement cadeau</Heading>
 
       {subscriptionData.length === 0 ? (
         <View border="base" padding="base" blockAlignment="center" inlineAlignment="center">
-          There is no active subscription.
+          Il n'y a pas d'abonnement actif.
         </View>
       ) : (
         <Grid columns={['1fr', '1fr', '1fr']} spacing="base">
@@ -297,9 +297,9 @@ const getButtonKind= (label) => {
                 <BlockStack spacing="tight">
                
                     <BlockStack gap="100">
-                     <Text size="medium">{sub.status}</Text>
+                     <Text size="medium">{sub.status=="ACTIVE" ?'Actif': sub.status }</Text>
                      
-                        <Text size="medium">Next Order:{formatDate(sub.nextBillingDate)}</Text>
+                        <Text size="medium">Prochaine Commande:{formatDate(sub.nextBillingDate)}</Text>
                         </BlockStack>
                    
                   </BlockStack>
