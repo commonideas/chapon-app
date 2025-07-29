@@ -27,6 +27,7 @@ import {getBillingCycleInfo} from 'utilities';
 
 export interface SubscriptionListItemProps {
   id: string;
+  customerEmail: string;
   lastBillingAttemptErrorType: BillingAttemptErrorType | null;
   upcomingBillingCycles: BillingCycle[];
   firstLineName: string;
@@ -58,6 +59,7 @@ const statusIcon: {
 };
 
 export function SubscriptionListItem({
+  customerEmail,
   upcomingBillingCycles,
   firstLineName,
   lineCount,
@@ -116,6 +118,7 @@ export function SubscriptionListItem({
         action={
           <SubscriptionActions
             id={id}
+            customerEmail={customerEmail}
             status={status}
             cycleIndexToSkip={cycleIndexToSkip}
             refetchSubscriptionListData={refetchSubscriptionListData}

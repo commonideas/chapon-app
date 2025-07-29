@@ -15,6 +15,7 @@ import {SuccessToastType, useToast} from 'utilities/hooks/useToast';
 
 export interface SubscriptionActionsProps {
   id: string;
+  customerEmail: string;
   status: SubscriptionStatus;
   hasInventoryError: boolean;
   resumeDate?: string | null;
@@ -29,6 +30,7 @@ export const SUBSCRIPTION_ACTIONS_POPOVER_ID = 'subscription-actions-popover';
 
 export function SubscriptionActions({
   id,
+  customerEmail,
   status,
   hasInventoryError,
   resumeDate,
@@ -120,6 +122,7 @@ export function SubscriptionActions({
             overlay={
               <PauseSubscriptionModal
                 contractId={id}
+                customerEmail={customerEmail}
                 onPauseSubscription={onPauseSubscription}
               />
             }

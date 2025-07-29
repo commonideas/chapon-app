@@ -8,6 +8,7 @@ import {
   TextBlock,
   BlockStack,
 } from '@shopify/ui-extensions-react/customer-account';
+import axios from 'axios';
 
 import type {
   PauseSubscriptionContractMutation as PauseSubscriptionContractMutationData,
@@ -18,6 +19,7 @@ import {useExtensionApi, useGraphqlApi, useAppRequest} from 'foundation/Api';
 
 interface PauseSubscriptionModalProps {
   contractId: string;
+  customerEmail: string;
   onPauseSubscription: () => void;
 }
 
@@ -25,6 +27,7 @@ export const PAUSE_MODAL_ID = 'pause-subscription-modal';
 
 export function PauseSubscriptionModal({
   contractId,
+  customerEmail,
   onPauseSubscription,
 }: PauseSubscriptionModalProps) {
   const [loading, setLoading] = useState(false);
@@ -40,6 +43,8 @@ export function PauseSubscriptionModal({
     PauseSubscriptionContractMutationData,
     PauseSubscriptionContractMutationVariables
   >();
+    
+
 
   function clearErrorState() {
     setError(false);
@@ -67,7 +72,9 @@ export function PauseSubscriptionModal({
       setLoading(false);
       return;
     }
-
+        await sendPauseConfirmationEmail({
+      customerEmail: customerEmail
+    });
     setLoading(false);
     clearErrorState();
     overlay.close(PAUSE_MODAL_ID);
@@ -75,6 +82,31 @@ export function PauseSubscriptionModal({
     onPauseSubscription();
     sendRequest({contractId, operationName: 'PAUSE'});
   }
+
+async function sendPauseConfirmationEmail({
+  customerEmail
+}: {
+  customerEmail: string;
+}) {
+  try {
+
+    const form = new FormData();
+    form.append("email", customerEmail);
+    fetch(
+      "https://app.chapon.com/api/send-email",
+      {
+        method: "POST",
+        mode: "no-cors",
+        body: form,
+        cache: "no-cache",
+      },
+    ).catch((err) => {
+      console.error("Error uploading data:", err);
+    });
+  } catch (err) {
+    console.error('❌ Network or server error sending email:', err);
+  }
+}
 
   return (
     <Modal
