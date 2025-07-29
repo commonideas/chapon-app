@@ -13,8 +13,49 @@ import {useSubscriptionListData} from './hooks/useSubscriptionListData';
 import {SubscriptionListEmptyState, SubscriptionListItem} from './components';
 import {useExtensionApi} from 'foundation/Api';
 import type {BillingAttemptErrorType} from 'types';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export function SubscriptionList() {
+  const[customerEmail,setCustomerEmail]=useState("test@gmail.com");
+  useEffect(() => {
+  console.log("useeffect___call");
+    fetchCustomerData();
+  }, []);
+  
+  const getCustomerNameQuery = {
+  query: `query {
+    customer {
+      emailAddress{
+      emailAddress
+      }
+      id
+    }
+  }`
+};
+  const fetchCustomerData = async () => {
+    console.log("fetchCustomerData");
+      try {
+        const response = await fetch("shopify://customer-account/api/unstable/graphql.json", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(getCustomerNameQuery),
+        });
+  
+        const { data: { customer } } = await response.json();
+        
+        const { emailAddress, id } = customer;
+        setCustomerEmail(emailAddress.emailAddress)
+ 
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+      }
+    };
+    
+
+
   const {i18n} = useExtensionApi();
   const {data, loading, error, refetchSubscriptionListData} =
     useSubscriptionListData();
@@ -30,6 +71,7 @@ export function SubscriptionList() {
   if (data?.subscriptionContracts.length === 0) {
     return <SubscriptionListEmptyState />;
   }
+
 
   const listItems = data?.subscriptionContracts.length
     ? data.subscriptionContracts.map(
@@ -50,6 +92,7 @@ export function SubscriptionList() {
           return (
             <SubscriptionListItem
               key={id}
+              customerEmail={customerEmail}
               id={id}
               upcomingBillingCycles={upcomingBillingCycles}
               firstLineName={name}

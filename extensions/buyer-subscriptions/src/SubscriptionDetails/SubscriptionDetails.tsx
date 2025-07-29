@@ -23,12 +23,51 @@ import {useExtensionApi} from 'foundation/Api';
 import {BillingAttemptErrorType} from 'types';
 import {useToast, SuccessToastType} from 'utilities/hooks/useToast';
 import {DetailsActions} from './DetailsActions';
+import { useEffect, useState } from 'react';
 
 interface SubscriptionDetailsProps {
   id: string;
 }
 
 export function SubscriptionDetails({id}: SubscriptionDetailsProps) {
+   const[customerEmail,setCustomerEmail]=useState("");
+  useEffect(() => {
+  console.log("useeffect___call");
+    fetchCustomerData();
+  }, []);
+  
+  const getCustomerNameQuery = {
+  query: `query {
+    customer {
+      emailAddress{
+      emailAddress
+      }
+      id
+    }
+  }`
+};
+  const fetchCustomerData = async () => {
+    console.log("fetchCustomerData");
+      try {
+        const response = await fetch("shopify://customer-account/api/unstable/graphql.json", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(getCustomerNameQuery),
+        });
+  
+        const { data: { customer } } = await response.json();
+        
+        const { emailAddress, id } = customer;
+        setCustomerEmail(emailAddress.emailAddress)
+ 
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+      }
+    };
+    
+
   const {data, loading, error, refetchSubscriptionContract, refetchLoading} =
     useSubscriptionContract({id});
   const {i18n} = useExtensionApi();
@@ -62,7 +101,6 @@ export function SubscriptionDetails({id}: SubscriptionDetailsProps) {
   } = data.subscriptionContract;
 
   const {nextBillingDate} = getBillingCycleInfo(upcomingBillingCycles);
-
   const hasInventoryError =
     (lastBillingAttemptErrorType as BillingAttemptErrorType | null) ===
     BillingAttemptErrorType.InventoryError;
@@ -101,6 +139,7 @@ export function SubscriptionDetails({id}: SubscriptionDetailsProps) {
       primaryAction={
         <DetailsActions
           contractId={contractId}
+          customerEmail={customerEmail}
           status={status}
           refetchSubscriptionContract={refetchSubscriptionContract}
           lastOrderPrice={lastOrderPrice}

@@ -10,6 +10,7 @@ import {SuccessToastType, useToast} from 'utilities/hooks/useToast';
 
 export interface DetailsActionsProps {
   contractId: string;
+  customerEmail: string;
   status: SubscriptionStatus;
   nextBillingDate?: string;
   lastOrderPrice?: Money | null;
@@ -19,6 +20,7 @@ export interface DetailsActionsProps {
 
 export function DetailsActions({
   contractId,
+  customerEmail,
   status,
   lastOrderPrice,
   nextOrderPrice,
@@ -54,6 +56,7 @@ export function DetailsActions({
           overlay={
             <PauseSubscriptionModal
               contractId={contractId}
+              customerEmail={customerEmail}
               onPauseSubscription={onPauseSubscription}
             />
           }
