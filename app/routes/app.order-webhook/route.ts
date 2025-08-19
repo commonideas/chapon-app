@@ -359,7 +359,7 @@ export const action: ActionFunction = async ({request}) => {
               html: `
                 <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
                   <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
-                    <h2 style="color: #d2691e;">🎁 Activez votre abonnement cadeau Chapon</h2>
+                    <h2 style="color: #000000ff;">🎁 Activez votre abonnement cadeau Chapon</h2>
                     <p>Bonjour,</p>
                     <p>Vous trouverez en pièce jointe votre carte cadeau.<br>
                     Elle contient un <strong>code à usage unique</strong> que votre destinataire devra renseigner pour activer son abonnement.</p>
@@ -368,11 +368,7 @@ export const action: ActionFunction = async ({request}) => {
                     <ol>
                       <li>Rendez-vous sur : <a href="https://chapon.com/pages/activation-abonnement">https://chapon.com/pages/activation-abonnement</a></li>
                       <li>Renseignez votre code dans l’espace dédié</li>
-                      <li>
-                        <p style="font-size: 18px; color: #2c3e50; background-color: #f1f1f1; padding: 12px 16px; border-radius: 6px; text-align: center; font-weight: bold;">
-                          ${contract_id1}
-                        </p>
-                      </li>
+                    
                       <li>📦 Une fois activé, l’abonnement démarre : le premier envoi sera préparé avec soin et expédié dans les jours suivants.</li>
                     </ol>
 
@@ -381,7 +377,7 @@ export const action: ActionFunction = async ({request}) => {
                     <p>L’équipe Chapon Chocolatier</p>
 
                     <hr style="margin-top: 30px; border: none; border-top: 1px solid #e0e0e0;">
-                    <p style="font-size: 12px; color: #888;">Cet email a été envoyé par l'application Chapon sur Shopify.</p>
+                    <p style="font-size: 12px; color: #888;">Cet email a été envoyé par l'application Chapon.</p>
                   </div>
                 </div>
                 `,
