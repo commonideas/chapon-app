@@ -231,7 +231,7 @@ function chunkArray(array, size) {
 }
 const formatDate = (isoDate) => {
   const date = new Date(isoDate);
-  return date.toLocaleDateString('en-GB', {
+   return date.toLocaleDateString('fr-FR', {
     day: '2-digit',
     month: 'long',
     year: 'numeric',

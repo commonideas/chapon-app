@@ -36,12 +36,7 @@ export async function action({ request }: { request: Request }) {
         to: [{ email: email }],
          subject: 'Confirmation de mise en pause de votre abonnement',
         html: `
-          Bonjour,<br><br>
-          Nous vous confirmons que votre abonnement a été mis en pause.<br><br>
-          Vous pouvez décider de reprendre les envois quand vous le souhaitez en cliquant sur ce lien :<br>
-          <a href="${manageUrl}">${manageUrl}</a><br><br>
-          Nous vous souhaitons une très belle journée et à bientôt chez Chapon.
-        `,
+        <div> <img src='https://chapon-app.myshopify.com/cdn/shop/files/chapon.png' alt='Chapon Logo' style='max-width:150px;'><br><br> Bonjour,<br><br> Nous vous confirmons que votre abonnement a été mis en pause.<br><br> Vous pouvez décider de reprendre les envois quand vous le souhaitez en cliquant sur ce lien :<br> <a href="${manageUrl}">${manageUrl}</a><br><br> Nous vous souhaitons une très belle journée et à bientôt chez Chapon. </div>  `,
         text: `
 Bonjour,
 
