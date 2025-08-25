@@ -261,10 +261,10 @@ export const action: ActionFunction = async ({request}) => {
         const match = fullGid.match(/\/(\d+)$/);
         const contract_id = match ? match[1] : null;
         const recipientEmail = item.customAttributes?.find(
-          (attr: any) => attr.key === 'Nom',
+          (attr: any) => attr.key === 'Pour',
         )?.value;
         const senderEmail = item.customAttributes?.find(
-          (attr: any) => attr.key === 'Email',
+          (attr: any) => attr.key === 'De',
         )?.value;
           const gift_message = item.customAttributes?.find(
           (attr: any) => attr.key === 'Message',
