@@ -15,7 +15,7 @@ import {
   getNextBillingCycleDates,
   getPastBillingCycles,
 } from '~/models/SubscriptionBillingAttempt/SubscriptionBillingAttempt.server';
-import {getContractDetails} from '~/models/SubscriptionContract/SubscriptionContract.server';
+import {getContractDetails , createDraft} from '~/models/SubscriptionContract/SubscriptionContract.server';
 import {authenticate} from '~/shopify.server';
 import {NUM_BILLING_CYCLES_TO_SHOW} from '~/utils/constants';
 import {PaymentSummaryCard} from '~/components/PaymentSummaryCard/PaymentSummaryCard';
@@ -32,6 +32,7 @@ import {useFormatDate} from '~/utils/helpers/date';
 import {useBillContractAction} from '~/routes/app.contracts.$id._index/hooks/useBillContractAction';
 import {CreateOrderModal} from '~/routes/app.contracts.$id._index/components/CreateOrderModal/CreateOrderModal';
 import {FailedBillingAttemptBanner} from './components/FailedBillingAttemptBanner/FailedBillingAttemptBanner';
+import { ActivationCard } from '~/components/ActivationCard/ActivationCard';
 
 export const handle = {
   i18n: 'app.contracts',
@@ -68,6 +69,20 @@ export async function loader({params, request}) {
   const {
     billingPolicy: {interval, intervalCount,maxCycles},
   } = subscriptionContract;
+  const { lines }= subscriptionContract;
+  const keywords = ["L’immanquable", "L’essentielle", "La gourmande"];
+  const variantTitle = lines?.[0]?.variantTitle || "";
+  const isGiftedSubscription = keywords.some(keyword => variantTitle.includes(keyword));
+
+let draftId: string | null = null;
+let activationCode: string | null = null;
+
+if (isGiftedSubscription) {
+  const draftResult = await createDraft(admin.graphql, gid);
+  draftId = draftResult.draftId;
+  activationCode = draftResult.contract_id1;
+}
+  
 
   const upcomingBillingCyclesPromise =
     subscriptionContract.status !== SubscriptionContractStatus.Cancelled
@@ -100,6 +115,8 @@ export async function loader({params, request}) {
     pastBillingCycles,
     hasMoreBillingCycles,
     failedBillingCycle,
+    isGiftedSubscription,
+    activationCode
   };
 }
 
@@ -113,6 +130,8 @@ export default function ContractsDetailsPage() {
     pastBillingCycles,
     hasMoreBillingCycles,
     failedBillingCycle,
+    isGiftedSubscription,
+    activationCode
   } = useLoaderData<typeof loader>();
 
   const [openCancelModal, setOpenCancelModal] = useState(false);
@@ -285,6 +304,9 @@ export default function ContractsDetailsPage() {
                   customer={customer}
                 />
               ) : null}
+               {isGiftedSubscription && activationCode && subscriptionContract.status=="PAUSED" &&
+                <ActivationCard Code={activationCode} />
+              }
               {pastBillingCycles.length > 0 ? (
                 <PastOrdersCard pastBillingCycles={pastBillingCycles} />
               ) : null}

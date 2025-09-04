@@ -469,10 +469,10 @@ const chocolateTypeCondition = chocolateType.includes("Noir")
   : "( * ) Mixte    (   ) Noir";
 const durationCondition =
   duration == 3
-    ? "( * ) 3 mois    (   ) 6 mois    (   ) 9 mois"
+    ? "( * ) 3 mois    (   ) 6 mois    (   ) 12 mois"
     : duration == 6
-    ? "(   ) 3 mois    ( * ) 6 mois    (   ) 9 mois"
-    : "(   ) 3 mois    (   ) 6 mois    ( * ) 9 mois";
+    ? "(   ) 3 mois    ( * ) 6 mois    (   ) 12 mois"
+    : "(   ) 3 mois    (   ) 6 mois    ( * ) 12 mois";
 
 page1.drawRectangle({
   x: 0,
@@ -648,7 +648,7 @@ page1.drawText('Activez votre abonnement sur https://chapon-app.myshopify.com/pa
 
     // Add second page (blank)
     const imageUrl =
-      'https://cdn.shopify.com/s/files/1/0913/4365/1158/files/Annotation_2025-07-22_151703.png?v=1753182154';
+      'https://cdn.shopify.com/s/files/1/0913/4365/1158/files/Chapon_e_cartes_A6_148x105mm_HD__4__pdf_1.jpg?v=1756354855';
     const imgRes = await fetch(imageUrl);
     if (!imgRes.ok) throw new Error('Failed to fetch image');
     const arrayBuffer = await imgRes.arrayBuffer();

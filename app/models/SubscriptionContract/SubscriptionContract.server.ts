@@ -343,6 +343,37 @@ export async function getProductVariantPrice(
   return price ?? -1;
 }
 
+const draftMutation = `
+  mutation subscriptionContractUpdate($contractId: ID!) {
+    subscriptionContractUpdate(contractId: $contractId) {
+      draft {
+        id
+      }
+      userErrors {
+        field
+        message
+      }
+    }
+  }
+`;
+
+export async function createDraft(graphql: GraphQLClient, contractId: string) {
+  const result = await graphql(draftMutation, {
+    variables: { contractId },
+  });
+  const response = await result.json();
+  const draftId =
+    response?.data?.subscriptionContractUpdate?.draft?.id || null;
+
+  let contract_id1: string | null = null;
+  if (draftId) {
+    const match = draftId.match(/\/(\d+)$/);
+    contract_id1 = match ? match[1] : null;
+  }
+
+  return { draftId, contract_id1, userErrors: response?.data?.subscriptionContractUpdate?.userErrors || [] };
+}
+
 interface ContractPriceBreakdownArgs {
   currencyCode: string;
   lines: {
