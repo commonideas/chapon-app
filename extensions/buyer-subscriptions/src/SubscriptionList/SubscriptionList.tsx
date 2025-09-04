@@ -71,10 +71,22 @@ export function SubscriptionList() {
   if (data?.subscriptionContracts.length === 0) {
     return <SubscriptionListEmptyState />;
   }
+  const excludedNames = ["L’immanquable", "L’essentielle", "La gourmande"];
 
+  const filteredContracts = data?.subscriptionContracts?.filter(({ lines }) => {
+    const { name } = lines[0];
+    const lowerName = name.toLowerCase();
 
-  const listItems = data?.subscriptionContracts.length
-    ? data.subscriptionContracts.map(
+    return !excludedNames.some(word =>
+      lowerName.includes(word.toLowerCase())
+    );
+  }) ?? [];
+  
+    if (filteredContracts.length === 0) {
+      return <SubscriptionListEmptyState />;
+    }
+
+    const listItems = filteredContracts.length ? filteredContracts.map(
         ({
           lines,
           id,
@@ -87,7 +99,7 @@ export function SubscriptionList() {
           lastOrderPrice,
           priceBreakdownEstimate,
         }) => {
-          const {name, image} = lines[0];
+          const { name, image } = lines[0];
 
           return (
             <SubscriptionListItem

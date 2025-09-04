@@ -162,7 +162,7 @@ const handleAction = async (action, subscriptionId, customerId) => {
 
     switch (action.toLowerCase()) {
       case 'activate':
-        response = await fetch(`https://delivery-sp-virtue-guild.trycloudflare.com/api/subscription${query}&type=active`,  {
+        response = await fetch(`https://app.chapon.com/api/subscription${query}&type=active`,  {
           method: "GET",
           mode: "no-cors",
           headers: {
@@ -173,7 +173,7 @@ const handleAction = async (action, subscriptionId, customerId) => {
         break;
 
       case 'pause':
-        response = await fetch(`https://delivery-sp-virtue-guild.trycloudflare.com/api/subscription${query}&type=pause`,  {
+        response = await fetch(`https://app.chapon.com/api/subscription${query}&type=pause`,  {
           method: "GET",
           mode: "no-cors",
           headers: {
@@ -185,7 +185,7 @@ const handleAction = async (action, subscriptionId, customerId) => {
         break;
 
       case 'cancel':
-        response = await fetch(`https://delivery-sp-virtue-guild.trycloudflare.com/api/subscription${query}&type=cancel`,  {
+        response = await fetch(`https://app.chapon.com/api/subscription${query}&type=cancel`,  {
           method: "GET",
           mode: "no-cors",
           headers: {
@@ -313,7 +313,89 @@ const getButtonKind= (label) => {
                
 
                 <TextBlock emphasis="bold">{sub?.lines?.edges[0].node?.title}</TextBlock>
-              
+              <InlineLayout spacing="base" columns={['fill', 'fill']}>
+                  {getActionsForStatus(sub.status).map((label, i) => {
+                    if (label.toLowerCase() === 'cancel') {
+                      return (
+                        <BlockStack spacing="base">
+                        <Link
+                          key={i}
+                          appearance="monochrome"
+                          overlay={
+                            <Modal
+                              id={`cancel-modal-${sub.id}`}
+                              title="Confirm Cancellation"
+                              padding
+                            >
+                              <BlockStack spacing="tight">
+                                <TextBlock>
+                                  Are you sure you want to cancel this subscription?
+                                </TextBlock>
+                                <InlineLayout spacing="tight">
+                                  <Button
+                                    kind="secondary"
+                                    onPress={() =>
+                                      ui.overlay.close(`cancel-modal-${sub.id}`)
+                                    }
+                                  >
+                                    No
+                                  </Button>
+                                  <Button
+                                    kind="primary"
+                                    appearance="critical"
+                                    loading={
+                                      loadingAction.id === sub.id &&
+                                      loadingAction.label === label
+                                    }
+                                    onPress={async () => {
+                                      handleAction(label, sub.id, customerId);
+                                      ui.overlay.close(`cancel-modal-${sub.id}`);
+                                    }}
+                                  >
+                                    Yes, Cancel
+                                  </Button>
+                                </InlineLayout>
+                              </BlockStack>
+                            </Modal>
+                          }
+                        >
+                          
+                          {/* <Button
+                            key={i}
+                            kind={getButtonKind(label)}
+                            size="slim"
+                            appearance={getButtonAppearance(label)}
+                          > */}
+                            {label.toUpperCase()}
+                          {/* </Button> */}
+                        </Link>
+                        </BlockStack>
+                      );
+                    }
+
+                    return (
+                      <BlockStack spacing="base">
+                      <Button
+                        key={i}
+                        kind="secondary"
+                        // kind={getButtonKind(label)}
+                        
+                        size="slim"
+                        loading={
+                          loadingAction.id === sub.id &&
+                          loadingAction.label === label
+                        }
+                        appearance={getButtonAppearance(label)}
+                        onPress={() => handleAction(label, sub.id, customerId)}
+                      >
+                        {label.toUpperCase()}
+                      </Button>
+                      </BlockStack>
+                    );
+                  })}
+                </InlineLayout>
+        
+
               </BlockStack>
             </Card>
           ))}

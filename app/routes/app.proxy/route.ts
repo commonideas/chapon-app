@@ -250,6 +250,7 @@ export const action: LoaderFunction = async ({ request }) => {
                     startDate: parsedStartDate.toISOString().split("T")[0],
                   });
                 console.log(updateData);
+                await fetch(`/api/subscription-gift-order?shop=${shop}`);
                return json({ message: "Contract Succesfully actived." });
            }
            
