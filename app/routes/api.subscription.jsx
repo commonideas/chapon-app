@@ -124,6 +124,97 @@ export const loader = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' },
       });
     }
+    if (type === "pause") {
+      const pauseMutation = `
+        mutation SubscriptionContractPause($contractId: ID!) {
+          subscriptionContractPause(subscriptionContractId: $contractId) {
+            contract {
+              id
+              status
+            }
+            userErrors {
+              field
+              message
+            }
+          }
+        }
+      `;
+
+      const pauseResponse = await admin.graphql(pauseMutation, {
+        variables: {
+          contractId: subscriptionId,
+        },
+      });
+
+      const responseData = await pauseResponse.json();
+
+      if (responseData.data.subscriptionContractPause.userErrors.length > 0) {
+        console.error("Pause errors:", responseData.data.subscriptionContractPause.userErrors);
+      } else {
+        console.log("Paused contract:", responseData.data.subscriptionContractPause.contract);
+      }
+    }
+
+    if (type === "active") {
+      const activateMutation = `
+        mutation SubscriptionContractActivate($contractId: ID!) {
+          subscriptionContractActivate(subscriptionContractId: $contractId) {
+            contract {
+              id
+              status
+            }
+            userErrors {
+              field
+              message
+            }
+          }
+        }
+      `;
+
+      const activateResponse = await admin.graphql(activateMutation, {
+        variables: {
+          contractId: subscriptionId,
+        },
+      });
+
+      const responseData = await activateResponse.json();
+
+      if (responseData.data.subscriptionContractActivate.userErrors.length > 0) {
+        console.error("Activate errors:", responseData.data.subscriptionContractActivate.userErrors);
+      } else {
+        console.log("Activated contract:", responseData.data.subscriptionContractActivate.contract);
+      }
+    }
+    if (type === "cancel") {
+      const cancelMutation = `
+        mutation subscriptionContractCancel($contractId: ID!) {
+          subscriptionContractCancel(subscriptionContractId: $contractId) {
+            contract {
+              id
+            }
+            userErrors {
+              field
+              message
+            }
+          }
+        }
+      `;
+
+      const cancelResponse = await admin.graphql(cancelMutation, {
+        variables: {
+          contractId: subscriptionId,
+        },
+      });
+
+      const responseData = await cancelResponse.json();
+
+      if (responseData.data.subscriptionContractCancel.userErrors.length > 0) {
+        console.error("cancel errors:", responseData.data.subscriptionContractCancel.userErrors);
+      } else {
+        console.log("cancel contract:", responseData.data.subscriptionContractCancel.contract);
+      }
+    }
+
 
     const updatedMetafield = updateResult?.data?.customerUpdate?.customer?.metafield;
     const updatedValue = updatedMetafield ? JSON.parse(updatedMetafield.value) : null;
