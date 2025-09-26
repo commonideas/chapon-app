@@ -151,6 +151,14 @@ const getBadgeAppearance = (status) => {
       return 'default';
   }
 };
+
+const handleCall = async() =>{
+  setTimeout(async() => {
+      await fetchSubscriptions();
+    setLoadingAction({ id: null, label: null });
+  }, 2000);
+}
+
 const handleAction = async (action, subscriptionId, customerId) => {
   console.log(`Action: ${action}, Subscription ID: ${subscriptionId}, Customer ID: ${customerId}`);
 
@@ -159,7 +167,7 @@ const handleAction = async (action, subscriptionId, customerId) => {
   try {
     let response;
     const query = `?subscriptionId=${encodeURIComponent(subscriptionId)}&customerId=${encodeURIComponent(customerId)}&shop=${shop}`;
-
+    handleCall();
     switch (action.toLowerCase()) {
       case 'activate':
         response = await fetch(`https://app.chapon.com/api/subscription${query}&type=active`,  {
@@ -360,14 +368,14 @@ const getButtonKind= (label) => {
                           }
                         >
                           
-                          {/* <Button
+                           <Button
                             key={i}
                             kind={getButtonKind(label)}
                             size="slim"
                             appearance={getButtonAppearance(label)}
-                          > */}
+                          > 
                             {label.toUpperCase()}
-                          {/* </Button> */}
+                         </Button>
                         </Link>
                         </BlockStack>
                       );

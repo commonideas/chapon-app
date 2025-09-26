@@ -8,6 +8,9 @@ api_version = "2025-07"
 [[extensions]]
 name = "Gift subscription"
 handle = "gift-subscription"
+
+uid = "0fe50b6a-df65-dabb-ed09-fecf1da9e19416e937a9"
+
 type = "ui_extension"
 
 
