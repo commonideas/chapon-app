@@ -638,7 +638,8 @@ page1.drawText(chocolateTypeCondition, {
 yPosition -= 55;
 
 // === URL ===
-page1.drawText('Activez votre abonnement sur https://chapon-app.myshopify.com/pages/activate-subscription', {
+// page1.drawText('Activez votre abonnement sur https://chapon-app.myshopify.com/pages/activate-subscription', {
+page1.drawText('Activez votre abonnement sur https://chapon.com/pages/activation-abonnement.com', {
   x: width / 2 - 155,
   y: yPosition,
   size: smallfontSize,

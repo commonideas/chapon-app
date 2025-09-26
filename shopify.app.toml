@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "482a6738fd1a9fb5acd14920abf3387e"
-application_url = "https://showcase-reload-companies-nights.trycloudflare.com"
+application_url = "https://responsibility-warranties-agricultural-browser.trycloudflare.com"
 embedded = true
 name = "Subscriptions application"
 handle = "sub-gifts-1"
@@ -63,13 +63,13 @@ scopes = "customer_read_orders,customer_write_customers,customer_write_own_subsc
 
 [auth]
 redirect_urls = [
-  "https://showcase-reload-companies-nights.trycloudflare.com/auth/callback",
-  "https://showcase-reload-companies-nights.trycloudflare.com/auth/shopify/callback",
-  "https://showcase-reload-companies-nights.trycloudflare.com/api/auth/callback"
+  "https://responsibility-warranties-agricultural-browser.trycloudflare.com/auth/callback",
+  "https://responsibility-warranties-agricultural-browser.trycloudflare.com/auth/shopify/callback",
+  "https://responsibility-warranties-agricultural-browser.trycloudflare.com/api/auth/callback"
 ]
 
 [app_proxy]
-url = "https://showcase-reload-companies-nights.trycloudflare.com/app/proxy"
+url = "https://responsibility-warranties-agricultural-browser.trycloudflare.com/app/proxy"
 subpath = "sub-gifts-2"
 prefix = "apps"
 
@@ -78,5 +78,4 @@ embedded = false
 
 [build]
 automatically_update_urls_on_dev = true
-include_config_on_deploy = true
 dev_store_url = "chapon-app.myshopify.com"
