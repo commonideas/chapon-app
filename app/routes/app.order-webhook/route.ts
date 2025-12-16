@@ -153,7 +153,7 @@ export const action: ActionFunction = async ({request}) => {
             {
               key: 'subscription_data',
               namespace: 'custom',
-              ownerId: 'gid://shopify/Customer/9110351216982',
+              ownerId: customerGID,
               value: JSON.stringify(existingSubscriptions),
               type: 'multi_line_text_field',
             },
