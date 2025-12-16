@@ -11,7 +11,7 @@ async function fetchAllCustomers(admin) {
   while (hasNextPage) {
     const query = `
       query FetchCustomers($after: String) {
-        customers(first: 1, after: $after) {
+        customers(first: 250, after: $after) {
           edges {
             node {
               id
