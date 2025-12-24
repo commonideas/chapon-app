@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "482a6738fd1a9fb5acd14920abf3387e"
-application_url = "https://responsibility-warranties-agricultural-browser.trycloudflare.com"
+application_url = "https://app.chapon.com"
 embedded = true
 name = "Subscriptions application"
 handle = "sub-gifts-1"
@@ -10,48 +10,48 @@ handle = "sub-gifts-1"
 api_version = "unstable"
 
   [[webhooks.subscriptions]]
-  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/customer_redact"
+  uri = "/app/webhooks/customer_redact"
   compliance_topics = [ "customers/data_request", "customers/redact" ]
 
   [[webhooks.subscriptions]]
-  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/shop_redact"
+  uri = "/app/webhooks/shop_redact"
   compliance_topics = [ "shop/redact" ]
 
   [[webhooks.subscriptions]]
   topics = [ "app/uninstalled" ]
-  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/app/uninstalled"
+  uri = "/app/webhooks/app/uninstalled"
 
   [[webhooks.subscriptions]]
   topics = [ "selling_plan_groups/create", "selling_plan_groups/update" ]
-  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/selling_plan_groups/create_or_update"
+  uri = "/webhooks/selling_plan_groups/create_or_update"
 
   [[webhooks.subscriptions]]
   topics = [ "subscription_billing_attempts/failure" ]
-  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/subscription_billing_attempts/failure"
+  uri = "/webhooks/subscription_billing_attempts/failure"
 
   [[webhooks.subscriptions]]
   topics = [ "subscription_billing_attempts/success" ]
-  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/subscription_billing_attempts/success"
+  uri = "/webhooks/subscription_billing_attempts/success"
 
   [[webhooks.subscriptions]]
   topics = [ "subscription_billing_cycles/skip" ]
-  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/subscription_billing_cycles/skip"
+  uri = "/webhooks/subscription_billing_cycles/skip"
 
   [[webhooks.subscriptions]]
   topics = [ "subscription_contracts/activate" ]
-  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/subscription_contracts/activate"
+  uri = "/webhooks/subscription_contracts/activate"
 
   [[webhooks.subscriptions]]
   topics = [ "subscription_contracts/cancel" ]
-  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/subscription_contracts/cancel"
+  uri = "/webhooks/subscription_contracts/cancel"
 
   [[webhooks.subscriptions]]
   topics = [ "subscription_contracts/create" ]
-  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/subscription_contracts/create"
+  uri = "/webhooks/subscription_contracts/create"
 
   [[webhooks.subscriptions]]
   topics = [ "subscription_contracts/pause" ]
-  uri = "https://discussion-losing-vintage-bent.trycloudflare.com/webhooks/subscription_contracts/pause"
+  uri = "/webhooks/subscription_contracts/pause"
 
   [[webhooks.subscriptions]]
   topics = [ "orders/create" ]
@@ -63,13 +63,13 @@ scopes = "customer_read_orders,customer_write_customers,customer_write_own_subsc
 
 [auth]
 redirect_urls = [
-  "https://responsibility-warranties-agricultural-browser.trycloudflare.com/auth/callback",
-  "https://responsibility-warranties-agricultural-browser.trycloudflare.com/auth/shopify/callback",
-  "https://responsibility-warranties-agricultural-browser.trycloudflare.com/api/auth/callback"
+  "https://app.chapon.com/auth/callback",
+  "https://app.chapon.com/auth/shopify/callback",
+  "https://app.chapon.com/api/auth/callback"
 ]
 
 [app_proxy]
-url = "https://responsibility-warranties-agricultural-browser.trycloudflare.com/app/proxy"
+url = "https://app.chapon.com/app/proxy"
 subpath = "sub-gifts-2"
 prefix = "apps"
 
