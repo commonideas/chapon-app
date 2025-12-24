@@ -656,7 +656,7 @@ page1.drawText('Activez votre abonnement sur https://chapon.com/pages/activation
     const imageBytes = new Uint8Array(arrayBuffer);
 
     // Embed the image (assuming PNG, use embedJpg for JPEG)
-    const image = await pdfDoc.embedPng(imageBytes);
+    const image = await pdfDoc.embedJpg(imageBytes);
     const page2 = pdfDoc.addPage([600, 400]);
     page2.drawImage(image, {
       x: 0,
