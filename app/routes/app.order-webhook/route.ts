@@ -59,7 +59,7 @@ export const action: ActionFunction = async ({request}) => {
       query {
         customer(id: "${customerGID}") {
           tags
-          metafields(first: 1, namespace: "custom") {
+          metafields(first: 100, namespace: "custom") {
             edges {
               node {
                 id
@@ -88,7 +88,7 @@ export const action: ActionFunction = async ({request}) => {
       const fetchData = await fetchResponse.json();
       const customerData = fetchData?.data?.customer;
       let existingSubscriptions = [] as SubscriptionEntry[];
-      const metafieldNode = customerData.metafields?.edges[0]?.node;
+      const metafieldNode = customer.metafields.edges.find( (m) => m.node.key === 'subscription_data' )?.node;
       if (metafieldNode?.value) {
         try {
           existingSubscriptions = JSON.parse(metafieldNode.value);
