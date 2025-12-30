@@ -18,7 +18,7 @@ async function fetchAllCustomers(admin) {
               email
               displayName
               tags
-              metafields(first: 1, namespace: "custom") {
+              metafields(first: 100, namespace: "custom") {
                 edges {
                   node {
                     id
@@ -43,7 +43,10 @@ async function fetchAllCustomers(admin) {
 
     const fetchedCustomers = result.data.customers.edges.map((edge) => {
       const customer = edge.node;
-      const metafield = customer.metafields.edges[0]?.node;
+      const metafield = customer.metafields.edges.find(
+        (m) => m.node.key === 'subscription_data'
+      )?.node;
+
 
       let subscriptionOrders = [];
       if (metafield?.value) {
